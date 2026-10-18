@@ -414,8 +414,10 @@ const REFRE=/^(\d{3}(?:\.\d+)*(?:\s?\([ivx]+\))?|Table\s+\w+(?:\.\w+)?|Appendix\
 function refOf(Q){const m=(Q.r||"").trim().match(REFRE);return m?m[1].replace(/\s+/g," "):null}
 function findSet(n){
   const pool=QS.filter(q=>refOf(q));const out=[];const used=new Set();
-  while(out.length<n){const q=rpick(pool);if(used.has(q.id))continue;used.add(q.id);
-    const ref=refOf(q);const same=pool.filter(o=>o.t===q.t&&refOf(o)!==ref).map(refOf);const pool2=[...new Set(same)];
+  const allRefs=[...new Set(pool.map(refOf))];let tries=0;
+  while(out.length<n&&tries++<500){const q=rpick(pool);if(used.has(q.id))continue;used.add(q.id);
+    const ref=refOf(q);let pool2=[...new Set(pool.filter(o=>o.t===q.t&&refOf(o)!==ref).map(refOf))];
+    if(pool2.length<3)pool2=pool2.concat(allRefs.filter(r=>r!==ref&&!pool2.includes(r)).sort(()=>Math.random()-.5).slice(0,6));
     const others=[];while(others.length<3&&pool2.length){const r=pool2.splice(Math.floor(Math.random()*pool2.length),1)[0];if(r!==ref&&!others.includes(r))others.push(r)}
     if(others.length<3)continue;
     const opts=[ref,...others];for(let i=3;i>0;i--){const j=Math.floor(Math.random()*(i+1));[opts[i],opts[j]]=[opts[j],opts[i]]}
@@ -603,7 +605,7 @@ function answered(i){return S.ans[i]!=null}
 function save(){if(S&&!S.done)PR.cur[S.pid]=S;persist()}
 
 // ---------- updates ----------
-const APP_VERSION="2026-10-18b";
+const APP_VERSION="2026-10-19a";
 let updateReady=false;
 async function updateApp(){
   try{if("caches" in window){const ks=await caches.keys();await Promise.all(ks.map(k=>caches.delete(k)))}
