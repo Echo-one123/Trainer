@@ -285,7 +285,7 @@ const TECH=[
  {t:"Never leave a blank",d:"A blank scores nothing; a guess has a 1 in 4 chance."},
  {t:"Read NOT questions twice",d:"\"Which is NOT…\" catches people every exam. Read the stem, then find the three that ARE in the regulation. The one left over is your answer."},
  {t:"Check the units",d:"Milliamps vs amps, mm² vs m, Ω vs MΩ. The wrong options are often the right number with the wrong unit."},
- {t:"Use the current book",d:"Questions are on A4:2026. If a rule feels different from site practice, check the regulation wording. The newer rules (RCDs, AFDDs, SPDs, EV) changed in A2 and A4."}
+ {t:"Use the current book",d:"Set your book (A2:2022 or A4:2026) on the Exams page and the questions follow it. If a rule feels different from site practice, check the regulation wording. The newer rules (RCDs, AFDDs, SPDs, EV) changed in A2 and A4."}
 ];
 
 // ================= 1. Calculation generator =================
@@ -586,13 +586,26 @@ function weakList(n){
 }
 function topicList(tid,n){return bookSort(pick(BYTOPIC[tid],Math.min(n,BYTOPIC[tid].length),Date.now()%1e9))}
 
+// ---------- which book: A2:2022 or A4:2026 ----------
+// In A2 mode, questions on what A3:2024 / A4:2026 changed are swapped for another question on the same topic.
+const BOOK=()=>PR.book==="A2"?"A2":"A4";
+const laterAmd=id=>{const x=QI[id];return !!x&&(x.m==="A3"||x.m==="A4")};
+const bookTxt=t=>BOOK()==="A2"?String(t).replace(/BS 7671:2018\+A4:2026/g,"BS 7671:2018+A2:2022"):t;
+function forBook(qids){
+  if(BOOK()!=="A2")return qids;
+  const used=new Set(qids);
+  return qids.map(id=>{if(!laterAmd(id))return id;
+    const alt=(BYTOPIC[QI[id].t]||[]).find(o=>!used.has(o)&&!laterAmd(o));
+    if(alt){used.add(alt);return alt}return null}).filter(Boolean);
+}
+
 // ---------- attempt state ----------
 let S=null, view="home", tab="exams", reviewFilter="wrong", confirmOpen=false, tick=null, topicPick=false, resetAsk=false;
 function start(def,resume){
   if(resume&&PR.cur[def.id]){S=PR.cur[def.id]}
   else{
     let gen=null,qids;
-    if(def.gen){gen=def.gen();qids=gen.map(g=>g.id)}else qids=def.qids||def.build();
+    if(def.gen){gen=def.gen();qids=gen.map(g=>g.id)}else qids=forBook(def.qids||def.build());
     S={gen,pid:def.id,name:def.name,mode:PR.mode,qids,ans:qids.map(()=>null),flag:qids.map(()=>false),checked:qids.map(()=>false),rec:qids.map(()=>false),cur:0,left:qids.length*SECS_PER_Q,done:false};
     PR.cur[def.id]=S;persist();
   }
@@ -605,7 +618,7 @@ function answered(i){return S.ans[i]!=null}
 function save(){if(S&&!S.done)PR.cur[S.pid]=S;persist()}
 
 // ---------- updates ----------
-const APP_VERSION="2026-10-19b";
+const APP_VERSION="2026-10-19c";
 let updateReady=false;
 async function updateApp(){
   try{if("caches" in window){const ks=await caches.keys();await Promise.all(ks.map(k=>caches.delete(k)))}
@@ -635,7 +648,7 @@ const DYN={
   smart:{id:"smart",name:"Smart exam",n:60,blurb:"60 questions from the whole bank, weighted towards your weak topics and the questions you got wrong. Covers every topic, in book order.",build:()=>smartList(60)},
   quick:{id:"quick",name:"Quick 20",n:20,blurb:"20 questions picked the same way, for a tea break.",build:()=>smartList(20)},
   weak:{id:"weak",name:"Weak areas",n:30,blurb:"30 questions only from your weakest topics.",build:()=>weakList(30)},
-  amd:{id:"amd",name:"Amendment changes",n:30,blurb:"30 questions on what Amendments 2, 3 and 4 changed: RCDs, AFDDs, surge protection, isolation, EV charging, Part 8 and more.",build:()=>bookSort(pick(QS.filter(q=>q.m).map(q=>q.id),30,Date.now()%1e9))},
+  amd:{id:"amd",name:"Amendment changes",n:30,blurb:"30 questions on what Amendments 2, 3 and 4 changed: RCDs, AFDDs, surge protection, isolation, EV charging, Part 8 and more.",build:()=>bookSort(pick(QS.filter(q=>q.m&&(BOOK()==="A4"||q.m==="A2")).map(q=>q.id),30,Date.now()%1e9))},
   daily:{id:"daily",name:"Daily 10",n:10,blurb:"",build:()=>smartList(10)},
   calc:{id:"calc",name:"Calculation practice",n:10,blurb:"",gen:()=>genSet(10)},
   mist:{id:"mist",name:"Redo mistakes",n:0,blurb:"Every question you got wrong last time you saw it.",build:()=>bookSort(mistakes())}
@@ -652,6 +665,7 @@ function renderHome(){
     <div class="wrap">${updateReady?`<div class="upd top"><b>Update available</b><span>Tap to get the latest questions. Your progress is kept.</span><button class="btn primary" data-upd="1">Update now</button></div>`:""}${tab==="exams"?homeExams():tab==="tips"?homeTips():homeProgress()}${footHTML()}</div>${topicPick?topicDialog():""}${resetAsk?resetDialog():""}`;
   app.querySelectorAll("[data-tab]").forEach(b=>b.onclick=()=>{tab=b.dataset.tab;render();window.scrollTo(0,0)});
   app.querySelectorAll("[data-mode]").forEach(b=>b.onclick=()=>{PR.mode=b.dataset.mode;persist();render()});
+  app.querySelectorAll("[data-book]").forEach(b=>b.onclick=()=>{PR.book=b.dataset.book;persist();render()});
   app.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>{topicPick=false;const id=b.dataset.go;if(!b.dataset.resume)delete PR.cur[id];start(defFor(id),!!b.dataset.resume)});
   const tp=app.querySelector("#topics");if(tp)tp.onclick=()=>{topicPick=true;render()};
   const cl=app.querySelector("#closeTopics");if(cl)cl.onclick=()=>{topicPick=false;render()};
@@ -677,6 +691,10 @@ function homeExams(){
         <button data-mode="exam" aria-pressed="${PR.mode==="exam"}">Exam mode</button>
         <button data-mode="practice" aria-pressed="${PR.mode==="practice"}">Practice mode</button></div>
       <span class="note">${PR.mode==="exam"?"Timer on, answers at the end.":"No timer, check each answer as you go."}</span></div>
+    <div class="modebar"><div class="mode" role="group" aria-label="Your book">
+        <button data-book="A2" aria-pressed="${BOOK()==="A2"}">A2:2022 book</button>
+        <button data-book="A4" aria-pressed="${BOOK()==="A4"}">A4:2026 book</button></div>
+      <span class="note">Not sure? The cover and the first page say BS 7671:2018+A2:2022 or +A4:2026.${BOOK()==="A2"?" Questions on the later changes (A3 and A4) are left out.":""}</span></div>
     ${countdownHTML()}
     <div class="daily ${dailyDone()?"done":""}"><div><b>Daily 10</b><span>${dailyDone()?"Done for today. Come back tomorrow.":"Ten questions aimed at your weak spots."}</span></div><div class="streak"><b>${streak()}</b><span>day streak</span></div><button class="btn ${dailyDone()?"":"primary"}" data-go="daily">${dailyDone()?"Do another":"Start"}</button></div>
     <h2 class="sec">Practice tools</h2>
@@ -804,7 +822,7 @@ function renderExam(){
     </div><div class="progress"><i style="width:${(i+1)/n*100}%"></i></div></div>
     <div class="wrap" style="padding-top:0">
       <div class="qhead"><div class="qnum">${i+1}<span class="muted" style="font-weight:600;font-size:16px"> / ${n}</span></div><div class="lo">${TP[Q.t].name}${Q.m?` <span class="amd">${Q.m}</span>`:""} · ${nAns} answered</div></div>
-      <div class="card"><div class="stem">${esc(Q.q)}</div><div class="opts" role="radiogroup">${opts}</div>${exp}</div>
+      <div class="card"><div class="stem">${esc(bookTxt(Q.q))}</div><div class="opts" role="radiogroup">${opts}</div>${exp}</div>
       <div class="nav">
         <button class="btn" id="prev" ${i===0?"disabled":""}>Back</button>
         <button class="btn ${S.flag[i]?"flagged":""}" id="flag" aria-pressed="${S.flag[i]}">${S.flag[i]?"Flagged":"Flag"}</button>
@@ -877,7 +895,7 @@ function renderResults(){
     const opts=Q.o.map((t,d)=>{let cls="opt";if(d===Q.a)cls+=" right";else if(S.ans[k]===d)cls+=" wrong";return `<div class="${cls}"><span class="key">${LETTERS[d]}</span><span>${esc(t)}</span></div>`}).join("");
     const w=why(Q);
     return `<div class="card"><div class="row" style="justify-content:space-between"><b>Question ${k+1}</b><span class="tag ${sk?"s":r?"r":"w"}">${sk?"Not answered":r?"Correct":"Wrong"}</span></div><div class="lo">${TP[Q.t].name}${Q.m?` <span class="amd">${Q.m}</span>`:""}</div>
-      <div class="stem" style="font-size:16px">${esc(Q.q)}</div><div class="opts">${opts}</div>${w?`<div class="explain ${r?"ok":"no"}">${w}</div>`:""}${r?"":coach(Q,S.ans[k])}</div>`}).join("")||`<p class="muted">Nothing to show for this filter.</p>`;
+      <div class="stem" style="font-size:16px">${esc(bookTxt(Q.q))}</div><div class="opts">${opts}</div>${w?`<div class="explain ${r?"ok":"no"}">${w}</div>`:""}${r?"":coach(Q,S.ans[k])}</div>`}).join("")||`<p class="muted">Nothing to show for this filter.</p>`;
   const lost=marksWent(by);
   const nWrong=S.qids.filter((_,k)=>!isRight(k)).length,nFlag=S.flag.filter(Boolean).length;
   app.innerHTML=`<div class="wrap">
