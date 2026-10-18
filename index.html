@@ -194,6 +194,18 @@ button{font:inherit;cursor:pointer}
 .tip ol,.panel.method ol,.tblock ul,.tip ul,.panel ul{margin:8px 0 4px;padding-left:20px}.tip li,.panel li{margin-bottom:4px}
 .ex{margin-top:8px;padding:8px 10px;border-left:3px solid var(--accent);background:var(--surface);border-radius:4px;font-variant-numeric:tabular-nums}
 .panel.method{margin-top:8px}.tblock{margin-top:12px}.tl{margin:8px 0;padding-left:20px}
+.daily{display:flex;align-items:center;gap:14px;flex-wrap:wrap;background:var(--surface);border:1px solid var(--accent);border-radius:var(--r);padding:14px 16px;margin-top:14px}
+.daily>div:first-child{flex:1;min-width:160px}.daily b{display:block;font:700 18px var(--display)}.daily span{font-size:13px;color:var(--muted)}
+.daily.done{border-color:var(--line)}.streak{text-align:center}.streak b{font:600 26px var(--mono)}
+.cd{display:flex;gap:16px;flex-wrap:wrap;align-items:flex-start;margin-top:14px}.cd input{font:inherit;padding:8px 10px;border:1px solid var(--line);border-radius:var(--r);background:var(--surface);color:var(--ink)}
+.cdn{text-align:center;min-width:90px}.cdn b{display:block;font:600 44px/1 var(--mono);color:var(--accent)}.cdn span{font-size:13px;color:var(--muted)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.fcard{display:flex;flex-direction:column;gap:14px;justify-content:center;align-items:center;text-align:center;width:100%;min-height:300px;padding:24px;border:1px solid var(--line);border-radius:12px;background:var(--surface);color:var(--ink)}
+.fcard.back{background:var(--accent-soft);border-color:var(--accent)}.fc-t{font:600 22px/1.35 var(--display)}
+.foot{display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;margin-top:36px;padding-top:20px;border-top:1px solid var(--line)}
+.btn.big{padding:14px 22px;font-size:16px;width:100%;max-width:360px}
+.upd{display:flex;flex-wrap:wrap;gap:6px 12px;align-items:center;background:var(--accent-soft);border:1px solid var(--accent);border-radius:var(--r);padding:12px 14px;width:100%;text-align:left}
+.upd b{flex-basis:100%}.upd span{flex:1;font-size:14px;color:var(--muted)}.upd.top{margin-bottom:14px}
 </style>
 
 </head>
@@ -208,7 +220,7 @@ const TOPICS=[{"id": "1", "name": "Scope and fundamental principles", "short": "
 const METHODS=[
  {id:"zs",name:"Maximum Zs and the 0.8 rule",re:/loop impedance|\bZs\b|Table 41\.[2-4]|0\.8\b|Type [BCD] (circuit|column)|Ia = \d+ ×/i,
   find:"Index: 'earth fault loop impedance'. Tables 41.2 (fuses, 0.4 s), 41.3 (circuit-breakers), 41.4 (fuses, 5 s). The 0.8 rule for measured values is in Appendix 3.",
-  steps:["Decide the disconnection time: final circuits up to 63 A with sockets, or up to 32 A fixed, need 0.4 s on TN. Distribution circuits and bigger final circuits get 5 s (Table 41.1, 411.3.2).","Pick the right table for the device: BS 88 / BS 1361 / BS 3036 fuses → 41.2 (0.4 s) or 41.4 (5 s); BS EN 60898 MCBs and RCBOs → 41.3.","Read across the device rating and type. For a circuit-breaker the formula check is Zs = 230 × 0.95 ÷ Ia, where Ia = 5 × In for Type B, 10 × In for Type C, 20 × In for Type D.","If the question gives a measured value (at room temperature), multiply the table value by 0.8 before comparing."],
+  steps:["Decide the disconnection time: final circuits up to 63 A with sockets, or up to 32 A fixed, need 0.4 s on TN. Distribution circuits and bigger final circuits get 5 s (Table 41.1, 411.3.2).","Pick the right table for the device: BS 88-2 / BS 88-3 / BS 3036 / BS 1362 fuses → 41.2 (0.4 s) or 41.4 (5 s) (BS 1361 has been replaced by BS 88-3); BS EN 60898 MCBs and RCBOs → 41.3.","Read across the device rating and type. For a circuit-breaker the formula check is Zs = 230 × 0.95 ÷ Ia, where Ia = 5 × In for Type B, 10 × In for Type C, 20 × In for Type D.","If the question gives a measured value (at room temperature), multiply the table value by 0.8 before comparing."],
   ex:"32 A Type B: Ia = 5 × 32 = 160 A<br>230 × 0.95 = 218.5<br>218.5 ÷ 160 = 1.37 Ω (Table 41.3)<br>Measured limit: 1.37 × 0.8 = 1.09 Ω",
   trap:"Using the 5 s table for a final circuit, or forgetting the 0.8 for a measured reading."},
  {id:"adi",name:"Adiabatic equation (cpc size or time)",re:/adiabatic|√\s*t|I²t|k²S²|S = I|csa of (a|the) protective conductor|for a protective conductor material/i,
@@ -232,7 +244,7 @@ const METHODS=[
   ex:"Zs = 0.3 Ω<br>230 × 0.95 = 218.5<br>218.5 ÷ 0.3 = 728 A",
   trap:"Using 400 V for an earth fault, or leaving out Cmin."},
  {id:"cable",name:"Cable sizing with rating factors",re:/rating factor|grouping|\bCa\b|\bCg\b|\bCi\b|Table 4C|Table 4B|ambient|0\.725|\bIt\b|tabulated current|Iz/i,
-  find:"Index: 'rating factors' or 'current-carrying capacity'. Appendix 4: Table 4B1 (ambient, Ca), Table 4C1 (grouping, Cg), Table 52.2 (thermal insulation, Ci), 0.725 for BS 3036 fuses (Cc).",
+  find:"Index: 'rating factors' or 'current-carrying capacity'. Appendix 4: Table 4B1 (ambient, Ca), Table 4C1 (grouping, Cg), Regulation 523.9 and Table 52.2 (thermal insulation, Ci), 0.725 for BS 3036 fuses (Cc).",
   steps:["Find each factor that applies: Ca (ambient), Cg (grouping), Ci (thermal insulation), Cc (0.725 for a BS 3036 fuse, 0.9 for buried cables).","Multiply the factors together.","Divide the device rating by that: It ≥ In ÷ (Ca × Cg × Ci × Cc).","Look up the cable in the right installation-method column of the Appendix 4 table and pick the first size with a rating at least It."],
   ex:"In = 32 A, Ca = 0.87, Cg = 0.8<br>0.87 × 0.8 = 0.696<br>32 ÷ 0.696 = 46 A → choose the first cable rated 46 A or more",
   trap:"Multiplying the rating by the factors instead of dividing, or using the wrong installation method column."},
@@ -247,7 +259,7 @@ const METHODS=[
   ex:"230 V circuit → 500 V DC test, minimum 1.0 MΩ",
   trap:"Using the SELV 0.5 MΩ value for a 230 V circuit."}
 ];
-function methodFor(Q){const s=Q.q+" "+(Q.x||"");if(!Q.c)return null;for(const m of METHODS)if(m.re.test(s))return m;return null}
+function methodFor(Q){if(Q.mth)return METHODS.find(m=>m.id===(Q.mth==="vdok"?"vd":Q.mth));const s=Q.q+" "+(Q.x||"");if(!Q.c)return null;for(const m of METHODS)if(m.re.test(s))return m;return null}
 const NOTQ=/\bnot\b|\bexcept\b|\bexcluded\b|\bnever\b/i;
 
 // Topic tips: where to look and the usual traps
@@ -255,17 +267,17 @@ const TOPIC_TIPS={
  "1":{find:"Part 1: 110.1 lists what's included, 110.2 what's excluded. Chapter 13 has the fundamental principles. Statutory regulations are listed in Appendix 2.",tips:["Learn the two lists in 110.1 and 110.2. Exam favourites: EV charging, prefabricated buildings and highway equipment are in; lightning protection, public distribution systems, ships and offshore installations are out.","BS 7671 is not statutory, but it can be used in court as evidence of meeting statutory rules such as the Electricity at Work Regulations (114.1).","Chapter 13 questions often just reword a line from 131 or 132. Find the key noun in the stem and scan for it."]},
  "2":{find:"Part 2 is alphabetical. Voltage bands and symbols come at the end of Part 2.",tips:["Read the stem as a definition and look for its key phrase in Part 2. Most definition questions quote it almost word for word.","Watch the voltage limits: extra-low voltage is up to 50 V AC or 120 V ripple-free DC. Low voltage is above that, up to 1000 V AC or 1500 V DC between conductors (600 V AC / 900 V DC to earth).","Skilled, instructed and ordinary persons each have their own definition. Questions test the difference."]},
  "3":{find:"Part 3 (Chapters 31 to 36) for earthing systems and supply characteristics. Appendix 5 lists external influence codes.",tips:["Earthing system letters: first letter is the supply's relationship to earth (T = earthed, I = isolated). Second letter is the installation's exposed parts (T = own electrode, N = via the supply). S = separate neutral and earth, C = combined.","External influence codes: first letter A = environment, B = use, C = construction of buildings. Then AD = water, AE = foreign solids, AF = corrosion. The number is the severity. Look it up in Appendix 5, don't guess.","Supply characteristics questions are in 313.1: nominal voltage, nature of current and frequency, prospective fault current, Ze, protective device at the origin."]},
- "4":{find:"Chapter 41. Table 41.1 for disconnection times, Tables 41.2 to 41.4 for maximum Zs, 411.5 and Table 41.5 for TT, Section 414 for SELV/PELV.",tips:["Disconnection times: TN final circuits up to 63 A with sockets or up to 32 A fixed = 0.4 s; TT = 0.2 s. TN distribution circuits = 5 s; TT = 1 s.","Pick the Zs table by device type first, then the time. Circuit-breakers use Table 41.3 for both 0.4 s and 5 s.","Additional protection (411.3.3): 30 mA RCD for socket-outlets up to 32 A and for mobile equipment up to 32 A used outdoors. Since A2 the risk-assessment exception only covers sockets in 'other' locations, not dwellings."]},
- "5":{find:"Chapter 42 (fire and burns, AFDDs at 421.1.7), Chapter 43 (overcurrent, adiabatic at 434.5.2), Section 443 (surge protection).",tips:["Overload: Ib ≤ In ≤ Iz and I2 ≤ 1.45 Iz. BS 3036 fuses need Iz ≥ In ÷ 0.725.","AFDDs (421.1.7): required for single-phase socket circuits up to 32 A in high-rise residential buildings, HMOs, purpose-built student accommodation and care homes. Recommended everywhere else.","Surge protection (443.4): required where an overvoltage could cause serious injury or loss of life, failure of a safety service, or significant financial or data loss. In all other cases it's required unless the owner declares it isn't needed."]},
- "6":{find:"Chapter 46 and Section 537. Firefighter's switch at 537.4.2.",tips:["Firefighter's switch: red, labelled, off position at the top, mounted no higher than 2.75 m.","A plug and socket can be used for isolation and for switching off for mechanical maintenance, but not for emergency switching.","Semiconductor devices must not be used as isolators."]},
- "7":{find:"Chapter 51 (Table 51 colours, 514 labels), Chapter 52 (Table 52.1 temperatures, Table 52.2 thermal insulation, 522.6 cables in walls).",tips:["Table 51: protective conductor green-and-yellow, functional earth pink (cream in the first 2018 printing), L1 brown, L2 black, L3 grey, neutral blue.","Cables in walls: inside the safe zones (within 150 mm of the top of the wall or a corner, or in line with an accessory) or deeper than 50 mm. Otherwise they need mechanical protection or a 30 mA RCD (522.6.202 to 522.6.204).","Wiring systems must be supported so they won't collapse early in a fire. This applies everywhere, not just escape routes (521.10.202)."]},
- "8":{find:"Chapter 53: 531.3 for RCD types, 534 for SPDs, 536 for selectivity and coordination, 530.3.201 for bidirectional devices (A3).",tips:["RCD types: AC = pure AC only; A = AC + pulsating DC; F = A plus mixed frequencies; B = all of those plus smooth DC. Type AC is only for fixed equipment with no DC component.","RCDs in series: put an S-type (time-delayed) upstream with at least 3 × the IΔn of the downstream one. Type AC must not go upstream of A, F or B.","SPDs: Type 1 at the origin where there's lightning protection or an overhead supply; Type 2 at distribution boards; Type 3 near sensitive equipment."]},
+ "4":{find:"Chapter 41. Table 41.1 for disconnection times, Tables 41.2 to 41.4 for maximum Zs, 411.5 and Table 41.5 for TT, Section 414 for SELV/PELV.",tips:["Disconnection times: TN final circuits up to 63 A with sockets or up to 32 A fixed = 0.4 s; TT = 0.2 s. TN distribution circuits = 5 s; TT = 1 s.","Pick the Zs table by device type first, then the time. Circuit-breakers use Table 41.3 for both 0.4 s and 5 s.","Additional protection (411.3.3): 30 mA RCD for socket-outlets up to 32 A and for mobile equipment up to 32 A used outdoors. The only exception (sockets only) is a documented risk assessment, and it can't be used in a dwelling."]},
+ "5":{find:"Chapter 42 (fire and burns, AFDDs at 421.1.7), Chapter 43 (overcurrent, adiabatic at 434.5.2), Section 443 (surge protection).",tips:["Overload: Ib ≤ In ≤ Iz and I2 ≤ 1.45 Iz. BS 3036 fuses need Iz ≥ In ÷ 0.725.","AFDDs (421.1.7): required for single-phase socket circuits up to 32 A in high-rise residential buildings (A2 wording: 'higher risk residential buildings'), HMOs, purpose-built student accommodation and care homes. Recommended everywhere else.","Surge protection (443.4): required where an overvoltage could cause serious injury or loss of life, failure of a safety service, or significant financial or data loss. In all other cases it's required unless the owner declares it isn't needed."]},
+ "6":{find:"Chapter 46 and Section 537. Firefighter's switch at 537.4.2.",tips:["Firefighter's switch: marked 'FIREFIGHTER'S SWITCH' or 'FIRE SWITCH' with ON/OFF, OFF position at the top, mounted no higher than 2.75 m. BS 7671 doesn't require red. Since A4 it's required where the building's fire strategy specifies one.","A plug and socket can be used for isolation and for switching off for mechanical maintenance, but not for emergency switching.","Semiconductor devices must not be used as isolators."]},
+ "7":{find:"Chapter 51 (Table 51 colours, 514 labels), Chapter 52 (Table 52.1 temperatures, Table 52.2 thermal insulation, 522.6 cables in walls).",tips:["Table 51: protective conductor green-and-yellow, functional earth pink (cream in the first 2018 printing), L1 brown, L2 black, L3 grey, neutral blue.","Cables in walls less than 50 mm deep: run in the safe zones (within 150 mm of the top of the wall or a corner, or in line with an accessory) AND give them 30 mA RCD protection, unless they have an earthed metal covering, earthed conduit/trunking or mechanical protection (522.6.202, 522.6.204). Metal-framed partitions need RCD or 522.6.204 at any depth (522.6.203).","Wiring systems must be supported so they won't collapse early in a fire. This applies everywhere, not just escape routes (521.10.202)."]},
+ "8":{find:"Chapter 53: 531.3 for RCD types, 534 for SPDs, 536 for selectivity and coordination, 530.3.201 for bidirectional devices (A3).",tips:["RCD types: AC = pure AC only; A = AC + pulsating DC; F = A plus mixed frequencies; B = all of those plus smooth DC. Type AC is only for fixed equipment with no DC component.","RCDs in series: put an S-type (time-delayed) upstream with at least 3 × the IΔn of the downstream one (536.4.1.4). Type AC may only serve fixed equipment known to have no DC component (531.3.3), so it can't sit upstream of circuits that need Type A, F or B.","SPDs: Type 1 at the origin where the structure has an external lightning protection system or direct-lightning protection is specified (534.4.1.3), otherwise Type 2 at the origin (534.4.1.4); Type 2 at distribution boards; Type 3 near sensitive equipment."]},
  "9":{find:"Chapter 54: Table 54.1 earthing conductors, 543.1 and Table 54.7 cpc sizes, 544.1 main bonding, Table 54.8 PME bonding, 544.2 supplementary bonding.",tips:["Table 54.7: line up to 16 mm² = cpc the same; 16 to 35 mm² = 16 mm²; over 35 mm² = half the line size.","Main bonding (544.1.1): at least half the earthing conductor csa, minimum 6 mm², need not exceed 25 mm² copper. For PME use Table 54.8, based on the supply neutral size.","Supplementary bonding: at least 2.5 mm² if sheathed or mechanically protected, 4 mm² if not."]},
  "10":{find:"Chapter 55 (551 generators, 553 sockets, 554 heaters, 559 luminaires), Chapter 56 (safety services), Chapter 57 (batteries, A4).",tips:["Luminaires: check 559 for mounting on combustible surfaces and the thermal effects of lamps.","Generating sets (551): check what's needed when a generator can run in parallel with the supply or as a standby.","Safety services need a supply that keeps working in a fire: check Chapter 56 for the source and cable requirements."]},
  "11":{find:"Part 6: 641 general, 642 inspection, 643 testing (in sequence), Table 64 insulation resistance, Chapter 65 periodic inspection.",tips:["Test sequence (643.1): continuity of protective conductors, continuity of ring final conductors, insulation resistance, protection by SELV/PELV/separation, floors and walls, polarity, earth electrode resistance. Then the live tests: earth fault loop impedance, prospective fault current, RCD operation, phase sequence, functional tests and voltage drop.","Table 64: SELV/PELV 250 V and 0.5 MΩ; up to 500 V use 500 V and 1 MΩ; above 500 V use 1000 V and 1 MΩ.","RCDs for additional protection: a general-type 30 mA RCD must trip within 300 ms at IΔn. S-type: 130 to 500 ms."]},
  "12":{find:"Part 7, by section number: 701 bathrooms, 702 pools, 703 saunas, 704 construction sites, 705 farms, 708 caravan parks, 709 marinas, 711 exhibitions, 722 EV charging.",tips:["Go straight to the section number and look for the 7xx.4xx regulation (protection), 7xx.5xx (selection and erection) or 7xx.3x (zones/assessment).","Bathrooms: zone 0 IPX7, zones 1 and 2 IPX4. All circuits in the location need 30 mA RCD protection. Supplementary bonding can be left out if all the conditions in 701.415.2 are met.","EV charging (722): on a PME supply the earth can't simply be used for an outdoor charge point. Check 722.411.4.1 for the allowed options."]},
  "13":{find:"Appendix 3 (time/current curves), Appendix 4 (current-carrying capacity, rating factors, voltage drop), Appendix 14 (fault current), Appendix 15 (ring and radial circuits).",tips:["Rating factors divide the device rating: It ≥ In ÷ (Ca × Cg × Ci × Cc).","Voltage drop limits (Table 4Ab): 3 % lighting, 5 % other, for a public LV supply.","Time/current curves are log scales. Go across from the time, find the device curve, then read down to the current. Each gridline is not equal."]},
- "14":{find:"Part 8: Chapter 82 for prosumer installations (PEI), and energy efficiency (Appendix 17 and its A4 Part 8 home).",tips:["PEI operating modes: direct feeding, reverse feeding and island mode.","An EEMS is the energy management system that controls the prosumer's installation. The definitions are worth reading once.","These are newer topics, so read the regulation wording itself rather than relying on what you know from site."]}
+ "14":{find:"Part 8: Chapter 81 for energy efficiency (new in A4, replacing Appendix 17, which A4 deleted) and Chapter 82 for prosumer installations (PEI).",tips:["PEI operating modes (824.2): connected mode (direct feeding or reverse feeding) and island mode.","An EEMS is the energy management system that controls the prosumer's installation. The definitions are worth reading once.","These are newer topics, so read the regulation wording itself rather than relying on what you know from site."]}
 };
 const TECH=[
  {t:"Use the index",d:"The index at the back finds most answers faster than the contents. Pick the most specific word in the question (\"firefighter's switch\", not \"switch\")."},
@@ -275,6 +287,216 @@ const TECH=[
  {t:"Check the units",d:"Milliamps vs amps, mm² vs m, Ω vs MΩ. The wrong options are often the right number with the wrong unit."},
  {t:"Use the current book",d:"Questions are on A4:2026. If a rule feels different from site practice, check the regulation wording. The newer rules (RCDs, AFDDs, SPDs, EV) changed in A2 and A4."}
 ];
+
+// ================= 1. Calculation generator =================
+function rint(a,b){return a+Math.floor(Math.random()*(b-a+1))}
+function rpick(a){return a[Math.floor(Math.random()*a.length)]}
+function r2(x){return Math.round(x*100)/100}
+function f2(x){return r2(x).toFixed(2)}
+const STD=[1,1.5,2.5,4,6,10,16,25,35,50,70,95,120];
+function nextStd(s){return STD.find(v=>v>=s-1e-9)||STD[STD.length-1]}
+function prevStd(s){const l=STD.filter(v=>v<s);return l.length?l[l.length-1]:STD[0]}
+// build options: correct first in list, then distractors; dedupe; shuffle
+function mkQ(mth,t,q,correct,wrongs,x,f){
+  const seen=new Set([correct]);const ws=[];
+  for(const w of wrongs){if(ws.length<3&&!seen.has(w.v)){seen.add(w.v);ws.push(w)}}
+  let k=2;while(ws.length<3){const v=correct+" ("+k+")";ws.push({v,why:"Not a value the working gives."});k++}
+  const all=[{v:correct,ok:true},...ws];for(let i=all.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[all[i],all[j]]=[all[j],all[i]]}
+  const w={};all.forEach((o,i)=>{if(!o.ok)w[i]=o.why});
+  return {t,c:1,mth,q,o:all.map(o=>o.v),a:all.findIndex(o=>o.ok),x,f,w,r:"",n:""};
+}
+const GEN={
+ zs(){const typ=rpick(["B","C","D"]),mult={B:5,C:10,D:20}[typ];const In=rpick([6,10,16,20,32,40,50]);
+   const Ia=mult*In,max=230*0.95/Ia,meas=max*0.8;const ask=rpick(["table","meas"]);
+   const other=typ==="B"?10:5;
+   if(ask==="table")return mkQ("zs","4",`What is the maximum earth fault loop impedance (Zs) for a ${In} A Type ${typ} circuit-breaker to BS EN 60898 for 0.4 s disconnection, using Zs = Uo × Cmin ÷ Ia?`,
+     f2(max)+" Ω",[{v:f2(max*0.8)+" Ω",why:"You applied the 0.8 factor. That's only for a measured value checked against the table."},{v:f2(230/Ia)+" Ω",why:"You left out Cmin (0.95)."},{v:f2(230*0.95/(other*In))+" Ω",why:`You used ${other} × In, which is a different curve type. Type ${typ} is ${mult} × In.`}],
+     `Ia = ${mult} × ${In} = ${Ia} A<br>230 × 0.95 = 218.5<br>218.5 ÷ ${Ia} = ${f2(max)} Ω`,"Table 41.3 (circuit-breakers), or work it out with 411.4.4: Zs = Uo × Cmin ÷ Ia.");
+   return mkQ("zs","4",`A ${In} A Type ${typ} circuit-breaker has a tabulated maximum Zs of ${f2(max)} Ω. What is the maximum MEASURED value you can accept when testing at normal room temperature?`,
+     f2(meas)+" Ω",[{v:f2(max)+" Ω",why:"That's the tabulated value. Measured values must be compared against 0.8 of it."},{v:f2(max*0.95)+" Ω",why:"0.95 is Cmin, which is already built into the table. The rule of thumb for measured values is 0.8."},{v:f2(max*1.2)+" Ω",why:"You multiplied by 1.2 instead of 0.8."}],
+     `${f2(max)} × 0.8 = ${f2(meas)} Ω`,"Appendix 3: the 0.8 rule of thumb for measured Zs at room temperature.")},
+ adi(){const I=rpick([400,500,600,750,800,1000,1200,1500,2000,2500,3000]),t=rpick([0.1,0.2,0.4,0.5,0.8,1,2,5]),k=rpick([115,143,76,51]);
+   const st=Math.sqrt(t),S=I*st/k,ans=nextStd(S);
+   if(S>120||S<0.6)return GEN.adi();
+   const wT=nextStd(I*t/k);
+   return mkQ("adi","9",`A protective conductor must withstand an earth fault current of ${I} A for ${t} s. k = ${k}. Using the adiabatic equation, what is the minimum standard csa?`,
+     ans+" mm²",[{v:prevStd(S)+" mm²",why:`The equation gives ${S.toFixed(2)} mm². Always round UP to the next standard size, never down.`},...(I*t/k<=120?[{v:wT+" mm²",why:"You multiplied by t instead of √t."}]:[]),{v:(ans===STD[STD.length-1]?STD[STD.length-2]:STD[STD.indexOf(ans)+1])+" mm²",why:"Too big: that's one size above the first size that satisfies the equation."},{v:nextStd(I*st/(k===115?143:115))+" mm²",why:`Use the k value given in the question (${k}).`},{v:nextStd(I/k)+" mm²",why:"You left out the time. S = I × √t ÷ k."},{v:(STD.indexOf(ans)>=2?STD[STD.indexOf(ans)-2]:STD[STD.indexOf(ans)+2])+" mm²",why:"Work it through again: I × √t ÷ k, then round up to the next standard size."}],
+     `S = I × √t ÷ k<br>√${t} = ${st.toFixed(3)}<br>${I} × ${st.toFixed(3)} = ${(I*st).toFixed(1)}<br>${(I*st).toFixed(1)} ÷ ${k} = ${S.toFixed(2)} mm² → ${ans} mm²`,"Regulation 543.1.3 (protective conductors), adiabatic equation. k values in Tables 54.2 to 54.6.")},
+ vd(){const mv=rpick([18,11,7.3,4.4,2.8,1.75]),Ib=rint(8,45),In=[16,20,25,32,40,50].find(v=>v>Ib)||63,L=rint(8,45);
+   const v=mv*Ib*L/1000,vIn=mv*In*L/1000;
+   return mkQ("vd","13",`A single-phase circuit has a design current (Ib) of ${Ib} A and is protected by a ${In} A device. The cable's voltage drop is ${mv} mV/A/m and the run is ${L} m. What is the voltage drop?`,
+     f2(v)+" V",[{v:f2(vIn)+" V",why:`You used the device rating (${In} A). Voltage drop uses the design current Ib = ${Ib} A.`},{v:f2(v*10)+" V",why:"You divided by 100 instead of 1000."},{v:f2(v*2)+" V",why:"Don't double the length. The mV/A/m figure already covers both conductors."},{v:f2(mv*L/1000)+" V",why:"You left out the current. Multiply mV/A/m × Ib × L."}],
+     `Vd = mV/A/m × Ib × L ÷ 1000<br>${mv} × ${Ib} = ${r2(mv*Ib)}<br>${r2(mv*Ib)} × ${L} = ${r2(mv*Ib*L)} mV<br>${r2(mv*Ib*L)} ÷ 1000 = ${f2(v)} V`,"Appendix 4 voltage drop tables for mV/A/m. Limits in Table 4Ab: 6.9 V lighting, 11.5 V other.")},
+ vdok(){const mv=rpick([18,11,7.3,4.4]),Ib=rint(10,32),L=rint(15,60),light=Math.random()<.4;const v=mv*Ib*L/1000,lim=light?6.9:11.5,ok=v<=lim;
+   return mkQ("vd","13",`A ${light?"lighting":"socket-outlet"} circuit on a public LV supply has Ib = ${Ib} A, ${mv} mV/A/m and a length of ${L} m. Does the voltage drop comply with the limit in Table 4Ab?`,
+     ok?`Yes: ${f2(v)} V is within ${lim} V`:`No: ${f2(v)} V is over ${lim} V`,
+     [{v:ok?`No: ${f2(v)} V is over ${lim} V`:`Yes: ${f2(v)} V is within ${lim} V`,why:`Compare ${f2(v)} V with the limit: ${light?"3 % of 230 V = 6.9 V for lighting":"5 % of 230 V = 11.5 V for other uses"}.`},
+      {v:ok?`No: ${f2(v)} V is over ${light?11.5:6.9} V`:`Yes: ${f2(v)} V is within ${light?11.5:6.9} V`,why:`Wrong limit: ${light?"lighting is 3 % (6.9 V), not 5 %":"other uses are 5 % (11.5 V), not 3 %"}.`},
+      {v:`Yes: ${f2(v*0.1)} V is within ${lim} V`,why:"You divided by 10,000. mV × A × m ÷ 1000 gives volts."}],
+     `${mv} × ${Ib} × ${L} = ${r2(mv*Ib*L)} mV<br>÷ 1000 = ${f2(v)} V<br>Limit: ${light?"3 %":"5 %"} of 230 V = ${lim} V → ${ok?"complies":"does not comply"}`,"Appendix 4, section 6.4 and Table 4Ab for the 3 % / 5 % limits.")},
+ tt(){const d=rpick([30,100,300,500]);const ra=50/(d/1000);const flip=Math.random()<.35;
+   if(flip){const R=rpick([80,100,150,166,200]);const max=50/R*1000;const opts=[30,100,300,500];const best=opts.filter(o=>o<=max).pop();if(!best)return GEN.tt();
+     return mkQ("tt","4",`A TT installation has a measured earth electrode resistance (Ra) of ${R} Ω. What is the largest standard RCD rating (IΔn) that meets Ra × IΔn ≤ 50 V?`,best+" mA",opts.filter(o=>o!==best).map(o=>({v:o+" mA",why:o>best?`${R} × ${o/1000} = ${r2(R*o/1000)} V, which is over 50 V.`:`It works, but it isn't the largest that does: ${best} mA also meets 50 V.`})),
+       `IΔn ≤ 50 ÷ Ra<br>50 ÷ ${R} = ${r2(50/R)} A = ${Math.round(max)} mA<br>Largest standard rating not above that: ${best} mA`,"Regulation 411.5.3, Ra × IΔn ≤ 50 V.")}
+   return mkQ("tt","4",`What is the maximum earth electrode resistance (Ra) for a TT system protected by a ${d} mA RCD, using Ra × IΔn ≤ 50 V?`,Math.round(ra)+" Ω",
+     [{v:r2(50/d)+" Ω",why:"You left IΔn in milliamps. Convert to amps first."},{v:Math.round(ra/2)+" Ω",why:"You used 25 V. The general limit is 50 V."},{v:Math.round(ra*0.8)+" Ω",why:"The 0.8 rule is for Zs, not Ra."}],
+     `${d} mA = ${d/1000} A<br>Ra = 50 ÷ ${d/1000} = ${Math.round(ra)} Ω`,"Regulation 411.5.3 and Table 41.5.")},
+ fault(){const Zs=rpick([0.15,0.2,0.25,0.3,0.35,0.4,0.5,0.6,0.8,1.0,1.2,1.5]);const I=218.5/Zs;
+   return mkQ("fault","4",`A circuit has a total earth fault loop impedance (Zs) of ${Zs} Ω. Using Uo = 230 V and Cmin = 0.95, what is the earth fault current?`,Math.round(I)+" A",
+     [{v:Math.round(230/Zs)+" A",why:"You left out Cmin (0.95)."},{v:Math.round(400*0.95/Zs)+" A",why:"An earth fault uses Uo, the line-to-earth voltage, which is 230 V, not 400 V."},{v:f2(218.5*Zs)+" A",why:"You multiplied by Zs instead of dividing."}],
+     `I = Uo × Cmin ÷ Zs<br>230 × 0.95 = 218.5<br>218.5 ÷ ${Zs} = ${Math.round(I)} A`,"Regulation 411.4.4 (Uo × Cmin ÷ Zs).")},
+ cable(){const In=rpick([16,20,32,40,50,63]),Ca=rpick([0.87,0.91,0.94,1]),Cg=rpick([0.8,0.7,0.65,0.57,1]),Ci=rpick([1,1,0.88,0.5]);
+   if(Ca*Cg*Ci===1)return GEN.cable();const p=Ca*Cg*Ci,It=In/p;
+   return mkQ("cable","13",`A circuit is protected by a ${In} A circuit-breaker. The rating factors are Ca = ${Ca}, Cg = ${Cg} and Ci = ${Ci}. What is the minimum tabulated current-carrying capacity (It) the cable needs?`,It.toFixed(1)+" A",
+     [{v:(In*p).toFixed(1)+" A",why:"You multiplied by the factors. Divide the device rating by them."},{v:(In/(Ca*Cg)).toFixed(1)+" A",why:"You left out Ci."},{v:(In/0.725/p).toFixed(1)+" A",why:"0.725 (Cc) is only for BS 3036 rewireable fuses."}].filter(o=>Ci!==1||!o.why.includes("Ci")).concat([{v:(In/(Ca*Ci)).toFixed(1)+" A",why:"You left out Cg."},{v:(In*1.45).toFixed(1)+" A",why:"1.45 is the I2 factor for overload, not a rating factor."},{v:(In/(Cg*Ci)).toFixed(1)+" A",why:"You left out Ca."},{v:(In+In*(1-p)).toFixed(1)+" A",why:"Rating factors aren't added on as a percentage. Divide In by the factors multiplied together."}]),
+     `Multiply the factors: ${Ca} × ${Cg} × ${Ci} = ${p.toFixed(3)}<br>It ≥ In ÷ factors<br>${In} ÷ ${p.toFixed(3)} = ${It.toFixed(1)} A`,"Appendix 4: It ≥ In ÷ (Ca × Cg × Ci × Cc). Ca from Table 4B1, Cg from Table 4C1, Ci from Regulation 523.9 (0.5 when totally surrounded for 0.5 m or more) and Table 52.2 (shorter lengths).")},
+ ol(){const In=rpick([5,15,20,30,45]),Iz=In/0.725;
+   return mkQ("ol","5",`A circuit is protected by a ${In} A BS 3036 semi-enclosed (rewireable) fuse. What is the minimum current-carrying capacity (Iz) of the cable?`,Iz.toFixed(1)+" A",
+     [{v:(In*0.725).toFixed(1)+" A",why:"You multiplied by 0.725. Divide by it."},{v:In+".0 A",why:"In ≤ Iz is enough for circuit-breakers, but BS 3036 fuses need Iz ≥ In ÷ 0.725."},{v:(In*1.45).toFixed(1)+" A",why:"1.45 is the I2 factor, not the BS 3036 rule."}],
+     `Iz ≥ In ÷ 0.725<br>${In} ÷ 0.725 = ${Iz.toFixed(1)} A`,"Regulation 433.1.202 (BS 3036 fuses) and Appendix 4 (Cc = 0.725).")}
+};
+const GEN_KEYS=Object.keys(GEN);
+function genSet(n,only){const out=[];for(let i=0;i<n;i++){const k=only?(only==="vd"?rpick(["vd","vdok"]):only):GEN_KEYS[i%GEN_KEYS.length];const g=GEN[k]();g.id="g:"+g.mth+":"+i+":"+Date.now();out.push(g)}
+  for(let i=out.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[out[i],out[j]]=[out[j],out[i]]}return out}
+
+// ================= 3. Flashcards =================
+const CARDS=[
+ ["Disconnection time: TN final circuit up to 63 A with sockets (230 V)","0.4 s (Table 41.1)"],
+ ["Disconnection time: TT final circuit up to 63 A with sockets (230 V)","0.2 s (Table 41.1)"],
+ ["Disconnection time: TN distribution circuit","5 s (411.3.2.3)"],
+ ["Disconnection time: TT distribution circuit","1 s (411.3.2.4)"],
+ ["Instant trip current (Ia) for Type B, C and D circuit-breakers","B = 5 × In, C = 10 × In, D = 20 × In"],
+ ["Max Zs: 32 A Type B circuit-breaker (0.4 s)","1.37 Ω (Table 41.3). Measured limit 1.09 Ω"],
+ ["Max Zs: 20 A Type B circuit-breaker","2.19 Ω (Table 41.3). Measured limit 1.75 Ω"],
+ ["Max Zs: 6 A Type B circuit-breaker","7.28 Ω (Table 41.3)"],
+ ["Max Zs: 32 A Type C circuit-breaker","0.68 Ω (Table 41.3)"],
+ ["The rule for checking a measured Zs","Measured Zs ≤ 0.8 × tabulated maximum (Appendix 3)"],
+ ["Formula for maximum Zs","Zs ≤ Uo × Cmin ÷ Ia, with Uo = 230 V, Cmin = 0.95 (411.4.4)"],
+ ["TT systems: the touch voltage rule","Ra × IΔn ≤ 50 V (411.5.3)"],
+ ["Max Ra with a 30 mA / 100 mA RCD (50 V rule)","1667 Ω / 500 Ω"],
+ ["Overload rule","Ib ≤ In ≤ Iz and I2 ≤ 1.45 × Iz (433.1.1)"],
+ ["Cable for a BS 3036 rewireable fuse","Iz ≥ In ÷ 0.725 (433.1.202)"],
+ ["Adiabatic equation","S = √(I² × t) ÷ k = I × √t ÷ k. Round UP to the next size"],
+ ["Table 54.7: cpc for a line conductor up to 16 mm²","Same size as the line conductor"],
+ ["Table 54.7: cpc for a line conductor over 16 up to 35 mm²","16 mm²"],
+ ["Table 54.7: cpc for a line conductor over 35 mm²","Half the line conductor size"],
+ ["Main protective bonding (not PME)","Half the earthing conductor csa, min 6 mm², need not exceed 25 mm² copper (544.1.1)"],
+ ["Main bonding on PME (Table 54.8): supply neutral up to 35 mm²","10 mm² copper"],
+ ["Main bonding on PME (Table 54.8): supply neutral over 35 up to 50 mm²","16 mm² copper"],
+ ["Supplementary bonding minimum sizes","Between two extraneous parts: 2.5 mm² if sheathed or mechanically protected, 4 mm² if not (544.2.3). Where an exposed part is involved, size it from the cpc (544.2.1, 544.2.2), but still 4 mm² minimum if not mechanically protected"],
+ ["Table 51 colours: L1, L2, L3, neutral","Brown, black, grey, blue"],
+ ["Table 51: functional earthing conductor","Pink (cream in the first 2018 printing)"],
+ ["Table 64: SELV and PELV circuits","Test at 250 V DC, minimum 0.5 MΩ"],
+ ["Table 64: circuits up to 500 V (e.g. 230/400 V)","Test at 500 V DC, minimum 1.0 MΩ"],
+ ["Table 64: circuits above 500 V","Test at 1000 V DC, minimum 1.0 MΩ"],
+ ["30 mA RCD (general type) for additional protection: trip time at IΔn","300 ms maximum"],
+ ["S-type (time-delayed) RCD trip time at IΔn","130 ms to 500 ms"],
+ ["411.3.3: what needs 30 mA RCD additional protection","Socket-outlets up to 32 A, and mobile equipment up to 32 A used outdoors"],
+ ["421.1.7: where AFDDs are required (A4)","Single-phase socket circuits up to 32 A in high-rise residential buildings (A2 called them 'higher risk residential buildings'), HMOs, purpose-built student accommodation and care homes. Recommended elsewhere"],
+ ["Voltage drop limits on a public LV supply","3 % lighting (6.9 V), 5 % other (11.5 V) (Table 4Ab)"],
+ ["Voltage drop formula","mV/A/m × Ib × L ÷ 1000 = volts"],
+ ["Extra-low voltage","Up to 50 V AC or 120 V ripple-free DC"],
+ ["Bathroom zone 1 height","2.25 m above the finished floor, or the highest fixed shower head or water outlet if higher (701.32)"],
+ ["Bathroom IP ratings","Zone 0 IPX7, zones 1 and 2 IPX4 (IPX5 where water jets are used for cleaning)"],
+ ["Bathroom socket-outlets (other than shaver supply units and SELV)","At least 3 m horizontally from the boundary of zone 1 (701.512.3). SELV socket-outlets are also exempt"],
+ ["Swimming pool zone 1","2 m horizontally from the pool edge, up to 2.5 m high (702.32)"],
+ ["Firefighter's switch","Marked 'FIREFIGHTER'S SWITCH' or 'FIRE SWITCH' with ON and OFF (letters at least 10 mm), OFF position at the top (537.4.4), no higher than 2.75 m above the standing beneath it (537.4.2.2). BS 7671 does not require it to be red. Since A4 it is required where the building's fire strategy specifies one"],
+ ["Safe zones for cables in walls","Under 50 mm deep: run within 150 mm of the top of the wall or a corner, or in line with an accessory, AND have 30 mA RCD protection, unless the cable has an earthed metal covering, earthed conduit/trunking or mechanical protection (522.6.202, 522.6.204). 50 mm or deeper: no zone needed (except metal-framed walls, 522.6.203)"],
+ ["Max conductor temperature: thermoplastic (PVC) / thermosetting (XLPE)","70 °C / 90 °C (Table 52.1)"],
+ ["Appendix 15: 32 A ring final, 2.5 mm²","Historically up to 100 m² floor area (Fig 15A)"],
+ ["Appendix 15: 32 A radial, 4 mm² / 20 A radial, 2.5 mm²","Historically 75 m² / 50 m² floor area (Fig 15B)"],
+ ["Prosumer installation (PEI) operating modes","Connected mode (direct feeding or reverse feeding) and island mode (824.2, Chapter 82)"],
+ ["Earthing system letters: TN-C-S","Supply earthed; installation earthed via the supply; neutral and protective functions combined in the supply (PEN), separate in the installation. Also called PME"]
+];
+
+// ================= 2. Find-it drill =================
+const REFRE=/^(\d{3}(?:\.\d+)*(?:\s?\([ivx]+\))?|Table\s+\w+(?:\.\w+)?|Appendix\s+\d+|Section\s+7\d\d|Chapter\s+\d+)/i;
+function refOf(Q){const m=(Q.r||"").trim().match(REFRE);return m?m[1].replace(/\s+/g," "):null}
+function findSet(n){
+  const pool=QS.filter(q=>refOf(q));const out=[];const used=new Set();
+  while(out.length<n){const q=rpick(pool);if(used.has(q.id))continue;used.add(q.id);
+    const ref=refOf(q);const same=pool.filter(o=>o.t===q.t&&refOf(o)!==ref).map(refOf);const pool2=[...new Set(same)];
+    const others=[];while(others.length<3&&pool2.length){const r=pool2.splice(Math.floor(Math.random()*pool2.length),1)[0];if(r!==ref&&!others.includes(r))others.push(r)}
+    if(others.length<3)continue;
+    const opts=[ref,...others];for(let i=3;i>0;i--){const j=Math.floor(Math.random()*(i+1));[opts[i],opts[j]]=[opts[j],opts[i]]}
+    out.push({qid:q.id,fact:q.q+" → "+q.o[q.a],o:opts,a:opts.indexOf(ref),f:q.f||""});}
+  return out;
+}
+let FD=null;
+function renderFind(){
+  if(FD.i>=FD.items.length){const right=FD.res.filter(r=>r.ok).length,avg=FD.res.reduce((a,r)=>a+r.s,0)/FD.res.length;
+    const best=PR.find&&PR.find.best;const isBest=right>=8&&(!best||avg<best);if(isBest){PR.find={best:avg};persist()}
+    app.innerHTML=`<div class="wrap"><div class="eyebrow">Find-it drill</div><h1>${right}/${FD.items.length} found</h1>
+      <p class="note" style="margin-top:8px">Average ${avg.toFixed(1)} s a question.${isBest?" New best time.":best?` Your best: ${best.toFixed(1)} s.`:""} Aim for under 60 s each with the book: that leaves time for the hard ones in the exam.</p>
+      <div class="review">${FD.items.map((it,k)=>`<div class="card"><div class="row" style="justify-content:space-between"><b>${k+1}. ${esc(it.o[it.a])}</b><span class="tag ${FD.res[k].ok?"r":"w"}">${FD.res[k].ok?"Found":"Missed"} · ${FD.res[k].s.toFixed(0)} s</span></div><div class="note">${esc(it.fact)}</div>${it.f?`<div class="tip find"><b>How to find it</b><span>${esc(it.f)}</span></div>`:""}</div>`).join("")}</div>
+      <div class="row" style="margin-top:18px"><button class="btn primary" id="again">Go again</button><button class="btn" id="home">Back</button></div></div>`;
+    app.querySelector("#again").onclick=()=>startFind();app.querySelector("#home").onclick=()=>{view="home";render()};return}
+  const it=FD.items[FD.i],ans=FD.ans;
+  app.innerHTML=`<div class="bar"><div class="in"><div class="title">Find-it drill · ${FD.i+1}/${FD.items.length}</div><span class="timer" id="ft">0 s</span><button class="btn sm" id="home">Exit</button></div><div class="progress"><i style="width:${(FD.i+1)/FD.items.length*100}%"></i></div></div>
+   <div class="wrap" style="padding-top:0"><div class="qhead"><div class="qnum">Where is this in the book?</div></div>
+   <div class="card"><div class="stem">${esc(it.fact)}</div><p class="note">Find it in your book, then pick the regulation or table it comes from.</p>
+   <div class="opts">${it.o.map((o,d)=>{let c="opt";if(ans!=null){if(d===it.a)c+=" right";else if(d===ans)c+=" wrong"}return `<button class="${c}" data-o="${d}" ${ans!=null?"disabled":""}><span class="key">${LETTERS[d]}</span><span>${esc(o)}</span></button>`}).join("")}</div>
+   ${ans!=null&&it.f?`<div class="tip find"><b>How to find it</b><span>${esc(it.f)}</span></div>`:""}</div>
+   ${ans!=null?`<div class="nav"><span class="grow"></span><button class="btn primary" id="next">Next</button></div>`:""}</div>`;
+  app.querySelector("#home").onclick=()=>{clearInterval(tick);view="home";render()};
+  if(ans==null){const t0=FD.t0;tick=setInterval(()=>{const el=document.getElementById("ft");if(el)el.textContent=Math.round((Date.now()-t0)/1000)+" s"},500);
+    app.querySelectorAll("[data-o]").forEach(b=>b.onclick=()=>{clearInterval(tick);FD.ans=+b.dataset.o;FD.res.push({ok:FD.ans===it.a,s:(Date.now()-FD.t0)/1000});render()})}
+  else{const el=document.getElementById("ft");el.textContent=FD.res[FD.i].s.toFixed(0)+" s";app.querySelector("#next").onclick=()=>{FD.i++;FD.ans=null;FD.t0=Date.now();render();window.scrollTo(0,0)}}
+}
+function startFind(){FD={items:findSet(10),i:0,ans:null,res:[],t0:Date.now()};view="find";render();window.scrollTo(0,0)}
+
+// flashcards view
+let FC=null;
+function startCards(){PR.fc=PR.fc||{};const order=CARDS.map((c,i)=>i).sort((a,b)=>(PR.fc[a]||0)-(PR.fc[b]||0)||Math.random()-.5);FC={deck:order.slice(0,20),i:0,flip:false,known:0};view="cards";render();window.scrollTo(0,0)}
+function renderCards(){
+  if(FC.i>=FC.deck.length){const mastered=Object.values(PR.fc).filter(v=>v>=2).length;
+    app.innerHTML=`<div class="wrap"><div class="eyebrow">Flashcards</div><h1>${FC.known}/${FC.deck.length} known</h1><p class="note" style="margin-top:8px">${mastered} of ${CARDS.length} cards mastered (known twice in a row). The ones you didn't know come up first next time.</p><div class="row" style="margin-top:18px"><button class="btn primary" id="again">Another 20</button><button class="btn" id="home">Back</button></div></div>`;
+    app.querySelector("#again").onclick=startCards;app.querySelector("#home").onclick=()=>{view="home";render()};return}
+  const c=CARDS[FC.deck[FC.i]];
+  app.innerHTML=`<div class="bar"><div class="in"><div class="title">Flashcards · ${FC.i+1}/${FC.deck.length}</div><button class="btn sm" id="home">Exit</button></div><div class="progress"><i style="width:${(FC.i+1)/FC.deck.length*100}%"></i></div></div>
+   <div class="wrap" style="padding-top:18px"><button class="fcard ${FC.flip?"back":""}" id="flip" aria-live="polite"><span class="eyebrow">${FC.flip?"Answer":"Question"}</span><span class="fc-t">${esc(FC.flip?c[1]:c[0])}</span>${FC.flip?`<span class="note">${esc(c[0])}</span>`:`<span class="note">Tap to turn over</span>`}</button>
+   ${FC.flip?`<div class="nav"><button class="btn" id="no" style="flex:1">Not yet</button><button class="btn primary" id="yes" style="flex:1">Knew it</button></div>`:""}</div>`;
+  app.querySelector("#home").onclick=()=>{persist();view="home";render()};
+  app.querySelector("#flip").onclick=()=>{FC.flip=!FC.flip;render()};
+  const y=app.querySelector("#yes"),n=app.querySelector("#no"),id=FC.deck[FC.i];
+  if(y)y.onclick=()=>{PR.fc[id]=(PR.fc[id]||0)+1;FC.known++;FC.i++;FC.flip=false;persist();render()};
+  if(n)n.onclick=()=>{PR.fc[id]=0;FC.deck.push(id);FC.i++;FC.flip=false;persist();render()};
+}
+
+// ================= 4. Daily 10 + 5. countdown =================
+function today(){const d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0")}
+function dayDiff(a,b){return Math.round((new Date(b+"T12:00:00")-new Date(a+"T12:00:00"))/864e5)}
+function streak(){const d=PR.daily;if(!d||!d.last)return 0;const g=dayDiff(d.last,today());return g<=1?d.streak:0}
+function dailyDone(){return PR.daily&&PR.daily.last===today()}
+function markDaily(){const t=today(),d=PR.daily||{};if(d.last===t)return;const g=d.last?dayDiff(d.last,t):99;PR.daily={last:t,streak:g===1?(d.streak||0)+1:1}}
+function countdownHTML(){
+  const ed=PR.examDate;
+  if(!ed)return `<div class="panel cd"><div><b>When's your exam?</b><p class="note">Add the date and you'll get a countdown and a plan for each week.</p></div><div class="row"><input type="date" id="edate" min="${today()}" aria-label="Exam date"><button class="btn primary" id="esave">Save</button></div></div>`;
+  const left=dayDiff(today(),ed);
+  if(left<0)return `<div class="panel cd"><div><b>Exam date has passed.</b><p class="note">Hope it went well. Set a new date if you're resitting.</p></div><div class="row"><input type="date" id="edate" min="${today()}" aria-label="Exam date"><button class="btn primary" id="esave">Save</button></div></div>`;
+  const exams=PR.hist.filter(h=>h.n>=40),last3=exams.slice(-3),ready=last3.length?Math.round(last3.reduce((a,h)=>a+h.pct,0)/last3.length):null;
+  const nextBook=PAPERS.filter(p=>p.group==="book").find(p=>!PR.hist.some(h=>h.pid===p.id));
+  const wt=weakTopics().slice(0,2).map(o=>o.t.short), wm=weakMethods().slice(0,1).map(o=>o.m.name.toLowerCase());
+  const plan=[];
+  if(left<=2){plan.push("Light revision only: flashcards and one Quick 20.","Check you've got your book, calculator and ID.","Use the index in the exam, and never leave a blank.")}
+  else{
+    plan.push(nextBook?`Sit ${nextBook.name} in exam mode.`:"Sit a Smart exam in exam mode.");
+    if(wt.length)plan.push(`Practise your weak topics: ${wt.join(" and ")}.`);else plan.push("Do one topic drill on a topic you haven't covered yet.");
+    plan.push(wm.length?`10 minutes of calculation practice on ${wm[0]}.`:"Daily 10 and a few flashcards each day.");
+    if(left<=10)plan.push("Do a Find-it drill to speed up finding things in the book.");
+  }
+  return `<div class="panel cd"><div class="cdn"><b>${left}</b><span>day${left===1?"":"s"} to your exam</span></div>
+    <div style="flex:1;min-width:200px"><b>${left<=2?"Last days":"This week"}</b><ul class="tl">${plan.map(p=>`<li>${esc(p)}</li>`).join("")}</ul>
+    <p class="note">${ready==null?"Sit a full exam to get a readiness score.":ready>=70?`Readiness ${ready}%: on track. Keep it above 70%.`:`Readiness ${ready}%. Aim for 70% or more on your last three full exams before the day.`}</p>
+    <button class="btn sm" id="eclear">Change date</button></div></div>`;
+}
+function wireCountdown(){
+  const s=app.querySelector("#esave");if(s)s.onclick=()=>{const v=app.querySelector("#edate").value;if(v){PR.examDate=v;persist();render()}};
+  const c=app.querySelector("#eclear");if(c)c.onclick=()=>{PR.examDate=null;persist();render()};
+}
+
+// ================= 6. Offline (GitHub Pages only) =================
+if("serviceWorker" in navigator&&/github\.io$/.test(location.hostname)){window.addEventListener("load",()=>{navigator.serviceWorker.register("sw.js").catch(()=>{})})}
 
 // ---------- data ----------
 // QS: [{id,t,c,q,o,a,x,r,n,k}]  k = sort key within topic (book order)
@@ -325,6 +547,7 @@ PR=loadLocal()||blank();
 // ---------- stats ----------
 // PR.q[id] = [attempts, correct, recent "1"/"0" string (last 4), lastTs]
 function record(id,ok){
+  if(id.startsWith("g:")){const m=id.split(":")[1];PR.cs=PR.cs||{};PR.cs[m]=((PR.cs[m]||"")+(ok?"1":"0")).slice(-20);return}
   const s=PR.q[id]||[0,0,"",0];s[0]++;if(ok)s[1]++;s[2]=(s[2]+(ok?"1":"0")).slice(-4);s[3]=Date.now();PR.q[id]=s;
 }
 function topicStats(tid){
@@ -366,21 +589,35 @@ let S=null, view="home", tab="exams", reviewFilter="wrong", confirmOpen=false, t
 function start(def,resume){
   if(resume&&PR.cur[def.id]){S=PR.cur[def.id]}
   else{
-    const qids=def.qids||def.build();
-    S={pid:def.id,name:def.name,mode:PR.mode,qids,ans:qids.map(()=>null),flag:qids.map(()=>false),checked:qids.map(()=>false),rec:qids.map(()=>false),cur:0,left:qids.length*SECS_PER_Q,done:false};
+    let gen=null,qids;
+    if(def.gen){gen=def.gen();qids=gen.map(g=>g.id)}else qids=def.qids||def.build();
+    S={gen,pid:def.id,name:def.name,mode:PR.mode,qids,ans:qids.map(()=>null),flag:qids.map(()=>false),checked:qids.map(()=>false),rec:qids.map(()=>false),cur:0,left:qids.length*SECS_PER_Q,done:false};
     PR.cur[def.id]=S;persist();
   }
   view="exam";confirmOpen=false;render();window.scrollTo(0,0);
 }
 const N=()=>S.qids.length, PASSN=()=>Math.ceil(N()*PASS_PCT);
-function q(i){return QI[S.qids[i]]}
+function q(i){return (S.gen&&S.gen[i])||QI[S.qids[i]]}
 function isRight(i){return S.ans[i]===q(i).a}
 function answered(i){return S.ans[i]!=null}
 function save(){if(S&&!S.done)PR.cur[S.pid]=S;persist()}
 
+// ---------- updates ----------
+const APP_VERSION="2026-10-18b";
+let updateReady=false;
+async function updateApp(){
+  try{if("caches" in window){const ks=await caches.keys();await Promise.all(ks.map(k=>caches.delete(k)))}
+    if(navigator.serviceWorker){const rs=await navigator.serviceWorker.getRegistrations();await Promise.all(rs.map(r=>r.update().catch(()=>{})))}}catch(e){}
+  persist();location.reload();
+}
+if(/github\.io$/.test(location.hostname)){
+  fetch("version.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.json()).then(v=>{if(v&&v.version&&v.version!==APP_VERSION){updateReady=true;if(view==="home")render()}}).catch(()=>{});
+}
+function footHTML(){return `<div class="foot">${updateReady?`<div class="upd"><b>A new version is ready.</b><span>Your progress is kept.</span><button class="btn primary" data-upd="1">Update now</button></div>`:""}
+  <button class="btn big" data-upd="1">Get latest version</button><span class="note">Version ${APP_VERSION}. Tap if anything looks wrong or out of date. Your progress is kept.</span></div>`}
 // ---------- render ----------
 const app=document.getElementById("app");
-function render(){clearInterval(tick);if(view==="exam")renderExam();else if(view==="results")renderResults();else renderHome()}
+function render(){clearInterval(tick);if(view==="find")return renderFind();if(view==="cards")return renderCards();if(view==="exam")renderExam();else if(view==="results")renderResults();else renderHome()}
 
 function card(def,opts={}){
   const cur=PR.cur[def.id], hist=PR.hist.filter(h=>h.pid===def.id);
@@ -397,9 +634,12 @@ const DYN={
   quick:{id:"quick",name:"Quick 20",n:20,blurb:"20 questions picked the same way, for a tea break.",build:()=>smartList(20)},
   weak:{id:"weak",name:"Weak areas",n:30,blurb:"30 questions only from your weakest topics.",build:()=>weakList(30)},
   amd:{id:"amd",name:"Amendment changes",n:30,blurb:"30 questions on what Amendments 2, 3 and 4 changed: RCDs, AFDDs, surge protection, isolation, EV charging, Part 8 and more.",build:()=>bookSort(pick(QS.filter(q=>q.m).map(q=>q.id),30,Date.now()%1e9))},
+  daily:{id:"daily",name:"Daily 10",n:10,blurb:"",build:()=>smartList(10)},
+  calc:{id:"calc",name:"Calculation practice",n:10,blurb:"",gen:()=>genSet(10)},
   mist:{id:"mist",name:"Redo mistakes",n:0,blurb:"Every question you got wrong last time you saw it.",build:()=>bookSort(mistakes())}
 };
-function defFor(id){if(DYN[id])return DYN[id];if(id.startsWith("topic:")){const t=TP[id.slice(6)];return {id,name:t.name,n:15,build:()=>topicList(t.id,15)}}return PAPERS.find(p=>p.id===id)}
+const CALC_NAMES={zs:"Zs and the 0.8 rule",adi:"Adiabatic",vd:"Voltage drop",tt:"TT: Ra × IΔn",fault:"Fault current",cable:"Rating factors",ol:"BS 3036 overload"};
+function defFor(id){if(DYN[id])return DYN[id];if(id.startsWith("calc:")){const m=id.slice(5);return {id,name:"Calc: "+CALC_NAMES[m],n:10,gen:()=>genSet(10,m)}}if(id.startsWith("topic:")){const t=TP[id.slice(6)];return {id,name:t.name,n:15,build:()=>topicList(t.id,15)}}return PAPERS.find(p=>p.id===id)}
 
 function renderHome(){
   const tabs=`<nav class="tabs" role="tablist">
@@ -407,7 +647,7 @@ function renderHome(){
     <button role="tab" aria-selected="${tab==="progress"}" data-tab="progress">Progress</button>
     <button role="tab" aria-selected="${tab==="tips"}" data-tab="tips">Tips</button></nav>`;
   app.innerHTML=`<div class="top"><div class="in"><div class="brand">18th Edition Trainer</div>${tabs}</div></div>
-    <div class="wrap">${tab==="exams"?homeExams():tab==="tips"?homeTips():homeProgress()}</div>${topicPick?topicDialog():""}${resetAsk?resetDialog():""}`;
+    <div class="wrap">${updateReady?`<div class="upd top"><b>Update available</b><span>Tap to get the latest questions. Your progress is kept.</span><button class="btn primary" data-upd="1">Update now</button></div>`:""}${tab==="exams"?homeExams():tab==="tips"?homeTips():homeProgress()}${footHTML()}</div>${topicPick?topicDialog():""}${resetAsk?resetDialog():""}`;
   app.querySelectorAll("[data-tab]").forEach(b=>b.onclick=()=>{tab=b.dataset.tab;render();window.scrollTo(0,0)});
   app.querySelectorAll("[data-mode]").forEach(b=>b.onclick=()=>{PR.mode=b.dataset.mode;persist();render()});
   app.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>{topicPick=false;const id=b.dataset.go;if(!b.dataset.resume)delete PR.cur[id];start(defFor(id),!!b.dataset.resume)});
@@ -416,6 +656,9 @@ function renderHome(){
   const rs=app.querySelector("#reset");if(rs)rs.onclick=()=>{resetAsk=true;render()};
   const rn=app.querySelector("#resetNo");if(rn){rn.onclick=()=>{resetAsk=false;render()};rn.focus()}
   const ry=app.querySelector("#resetYes");if(ry)ry.onclick=()=>{const m=PR.mode;PR=blank();PR.mode=m;resetAsk=false;persist();render()};
+  app.querySelectorAll("[data-upd]").forEach(b=>b.onclick=()=>{b.textContent="Updating…";updateApp()});
+  app.querySelectorAll("[data-act]").forEach(b=>b.onclick=()=>{if(b.dataset.act==="find")startFind();else startCards()});
+  wireCountdown();
   app.querySelectorAll("[data-tab-go]").forEach(b=>b.onclick=()=>{tab=b.dataset.tabGo;render();window.scrollTo(0,0)});
 }
 
@@ -432,6 +675,15 @@ function homeExams(){
         <button data-mode="exam" aria-pressed="${PR.mode==="exam"}">Exam mode</button>
         <button data-mode="practice" aria-pressed="${PR.mode==="practice"}">Practice mode</button></div>
       <span class="note">${PR.mode==="exam"?"Timer on, answers at the end.":"No timer, check each answer as you go."}</span></div>
+    ${countdownHTML()}
+    <div class="daily ${dailyDone()?"done":""}"><div><b>Daily 10</b><span>${dailyDone()?"Done for today. Come back tomorrow.":"Ten questions aimed at your weak spots."}</span></div><div class="streak"><b>${streak()}</b><span>day streak</span></div><button class="btn ${dailyDone()?"":"primary"}" data-go="daily">${dailyDone()?"Do another":"Start"}</button></div>
+    <h2 class="sec">Practice tools</h2>
+    <div class="papers">
+      <div class="paper"><h3>Calculation practice</h3><div class="note">New numbers every time, with the working by hand. Pick one type or mix them.</div>
+        <div class="chips"><button class="chip" data-go="calc">Mixed</button>${Object.entries(CALC_NAMES).map(([k,v])=>`<button class="chip" data-go="calc:${k}">${v}</button>`).join("")}</div></div>
+      <div class="paper"><h3>Find-it drill</h3><div class="note">10 facts from the exam. Find each one in your book and pick its regulation or table, against the clock.</div><div class="stat">${PR.find&&PR.find.best?`Best: ${PR.find.best.toFixed(1)} s a question`:"Practise finding answers fast"}</div><div class="row"><button class="btn primary" data-act="find">Start</button></div></div>
+      <div class="paper"><h3>Flashcards</h3><div class="note">${CARDS.length} key facts: disconnection times, Zs, Table 54.7, colours, zones and more.</div><div class="stat">${Object.values(PR.fc||{}).filter(v=>v>=2).length} of ${CARDS.length} mastered</div><div class="row"><button class="btn primary" data-act="cards">Start</button></div></div>
+    </div>
     <h2 class="sec">Built for you</h2>
     ${answeredN<20?`<p class="note" style="margin-bottom:10px">Sit one of the book-order exams first. Once you've answered a few dozen questions the smart exams start aiming at your weak topics.</p>`:""}
     <div class="papers">
@@ -531,6 +783,7 @@ function methodCard(m,collapsed){
 function methodStats(){
   const out={};METHODS.forEach(m=>out[m.id]={m,r:0,n:0});
   QS.forEach(q=>{const s=PR.q[q.id];if(!s)return;const m=methodFor(q);if(!m)return;for(const c of s[2]){out[m.id].n++;if(c==="1")out[m.id].r++}});
+  Object.entries(PR.cs||{}).forEach(([k,v])=>{if(!out[k])return;for(const c of v){out[k].n++;if(c==="1")out[k].r++}});
   return Object.values(out);
 }
 function weakMethods(){return methodStats().filter(o=>o.n>=3&&o.r/o.n<.6).sort((a,b)=>a.r/a.n-b.r/b.n)}
@@ -587,6 +840,7 @@ function submit(timeUp){
   clearInterval(tick);confirmOpen=false;S.done=true;S.timeUp=timeUp;
   S.qids.forEach((id,k)=>{if(!S.rec[k]&&(answered(k)||S.mode==="exam")){S.rec[k]=true;record(id,isRight(k))}});
   S.score=S.qids.filter((_,k)=>isRight(k)).length;
+  if(S.pid==="daily")markDaily();
   PR.hist.push({pid:S.pid,name:S.name,score:S.score,n:N(),pct:pct(S.score,N()),mode:S.mode,ts:Date.now()});
   if(PR.hist.length>200)PR.hist=PR.hist.slice(-200);
   delete PR.cur[S.pid];persist();view="results";reviewFilter="wrong";render();window.scrollTo(0,0);
